@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Letter</title>
+<title>Ancient Letter</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap'); /* handwritten font */
+  @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
   body {
     margin: 0;
     padding: 0;
-    background: #e8e0d4; /* light background */
     font-family: 'Patrick Hand', cursive;
+    background: #e8e0d4;
     overflow: hidden;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -19,49 +19,52 @@
     user-select: none;
   }
 
-  /* Realistic parchment */
   .letter-container {
     position: relative;
     width: 70%;
     max-width: 800px;
+    height: 90%;
     margin: auto;
     top: 5%;
-    padding: 40px;
+    padding: 50px 40px;
     font-size: 1.4em;
     line-height: 1.8em;
-    height: 90%;
     overflow: hidden;
-    border-radius: 15px;
-    background: linear-gradient(120deg, #fef3d4, #f4e1b6 50%, #fce8b0);
-    background-size: 100% 100%;
+    border-radius: 20px;
+    background: #fdf1d6;
+    background-image: 
+      url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGUlEQVQYV2NkYGBg+M+ACMTAwMDCYAACNGALyQn5YwAAAABJRU5ErkJggg==');
+    background-repeat: repeat;
     box-shadow: inset 0 0 50px rgba(0,0,0,0.2),
-                0 0 50px rgba(0,0,0,0.3);
+                0 10px 50px rgba(0,0,0,0.4);
     border: 2px solid #d2b48c;
-    position: relative;
   }
 
-  /* optional "burned edges" effect using pseudo-elements */
+  /* torn edges using pseudo-elements */
   .letter-container::before,
   .letter-container::after {
     content: '';
     position: absolute;
-    left: -5px;
-    right: -5px;
-    height: 10px;
+    left: 0;
+    right: 0;
+    height: 15px;
     background: radial-gradient(circle, rgba(0,0,0,0.05), transparent);
+    border-radius: 50%;
   }
 
   .letter-container::before {
-    top: -5px;
+    top: -10px;
   }
+
   .letter-container::after {
-    bottom: -5px;
+    bottom: -10px;
   }
 
   .letter-content {
     position: relative;
     top: 100%;
-    white-space: pre-wrap;
+    white-space: pre-wrap; /* preserves spaces and paragraphs */
+    transform: translateY(0);
   }
 
   audio {
@@ -72,9 +75,9 @@
 <body>
 
 <div class="letter-container" id="letterContainer">
-  <div class="letter-content" id="letterContent">
-    Loading letter...
-  </div>
+  <pre class="letter-content" id="letterContent">
+Loading letter...
+  </pre>
 </div>
 
 <audio id="bgMusic" loop>
@@ -90,9 +93,9 @@
 
   function scrollLetter(){
     if(scrolling){
-      scrollPos -= 0.1; // slow scroll
-      content.style.top = scrollPos + 'px';
-      if(Math.abs(scrollPos) < content.scrollHeight - container.clientHeight + 10){
+      scrollPos -= 0.1; // very slow scroll
+      content.style.transform = `translateY(${scrollPos}px)`;
+      if (Math.abs(scrollPos) < content.scrollHeight - container.clientHeight + 10){
         requestAnimationFrame(scrollLetter);
       } else {
         scrolling = false; // stop at end
@@ -117,7 +120,7 @@
   document.body.addEventListener('touchstart', startExperience, {once:true});
   document.body.addEventListener('click', startExperience, {once:true});
 
-  // Load letter
+  // Load letter and preserve spaces/paragraphs
   fetch('letter.txt')
     .then(res => res.text())
     .then(text => {
